@@ -5,6 +5,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -19,6 +20,9 @@ import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
 const SignUp: React.FC = () => {
   const FormRef = useRef<FormHandles>(null);
+  const PasswordInputRef = useRef<TextInput>(null);
+  const EmailInputRef = useRef<TextInput>(null);
+
   const navigation = useNavigation();
   return (
     <>
@@ -42,9 +46,41 @@ const SignUp: React.FC = () => {
                 console.log(data);
               }}
             >
-              <Input name="name" icon="user" placeholder="Nome" />
-              <Input name="email" icon="mail" placeholder="E-mail" />
-              <Input name="password" icon="lock" placeholder="Senha" />
+              <Input
+                autoCapitalize="words"
+                name="name"
+                icon="user"
+                placeholder="Nome"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  EmailInputRef.current?.focus();
+                }}
+              />
+              <Input
+                ref={EmailInputRef}
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  PasswordInputRef.current?.focus();
+                }}
+              />
+              <Input
+                ref={PasswordInputRef}
+                secureTextEntry
+                textContentType="newPassword"
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                returnKeyType="send"
+                onSubmitEditing={() => {
+                  FormRef.current?.submitForm();
+                }}
+              />
             </Form>
             <Button
               onPress={() => {

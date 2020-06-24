@@ -12,6 +12,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 
 import Icon from 'react-native-vector-icons/Feather';
+import { TextInput } from 'react-native';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
@@ -32,6 +33,8 @@ const SignIn: React.FC = () => {
   }, []);
 
   const FormRef = useRef<FormHandles>(null);
+  const PasswordRef = useRef<TextInput>(null);
+
   const navigation = useNavigation();
   return (
     <>
@@ -54,8 +57,29 @@ const SignIn: React.FC = () => {
               onSubmit={handleSubmit}
               style={{ alignItems: 'center' }}
             >
-              <Input name="email" icon="mail" placeholder="E-mail" />
-              <Input name="password" icon="lock" placeholder="Senha" />
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  PasswordRef.current?.focus();
+                }}
+              />
+              <Input
+                ref={PasswordRef}
+                secureTextEntry
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                returnKeyType="send"
+                onSubmitEditing={() => {
+                  FormRef.current?.submitForm();
+                }}
+              />
             </Form>
 
             <Button
