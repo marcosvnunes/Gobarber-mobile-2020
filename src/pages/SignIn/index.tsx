@@ -19,6 +19,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import logoImg from '../../assets/logo.png';
+import { useAuth } from '../../hooks/Auth';
 
 import {
   Container,
@@ -40,38 +41,42 @@ const SignIn: React.FC = () => {
   const FormRef = useRef<FormHandles>(null);
   const PasswordRef = useRef<TextInput>(null);
 
+  const { signIn } = useAuth();
+  console.log('atualizou');
   const navigation = useNavigation();
 
-  const handleSubmit = useCallback(async (data: SingInFromData) => {
-    try {
-      FormRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('Email obrigatório')
-          .email('Digite um email valido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
+  const handleSubmit = useCallback(
+    async (data: SingInFromData) => {
+      try {
+        FormRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('Email obrigatório')
+            .email('Digite um email valido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
 
-      await schema.validate(data, { abortEarly: false });
+        await schema.validate(data, { abortEarly: false });
 
-      /* await signIn({
+        await signIn({
           email: data.email,
           password: data.password,
         });
-        */
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const Errors = getValidationErrors(err);
-        FormRef.current?.setErrors(Errors);
-        return;
-      }
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const Errors = getValidationErrors(err);
+          FormRef.current?.setErrors(Errors);
+          return;
+        }
 
-      Alert.alert(
-        'Erro na autenticação',
-        'Ocorreu um erro ao fazer login, verifique seus dados',
-      );
-    }
-  }, []);
+        Alert.alert(
+          'Erro na autenticação',
+          'Ocorreu um erro ao fazer login, verifique seus dados',
+        );
+      }
+    },
+    [signIn],
+  );
   return (
     <>
       <KeyboardAvoidingView
